@@ -12,12 +12,14 @@
 
 const render=(function () {
     const init = function () {
+        // Create divs
+        const mainDiv = document.createElement("main");
+
         const queenFormDiv = document.createElement("div");
         queenFormDiv.id="queen-form-div";
 
         const queenListDiv = document.createElement("div");
         queenListDiv.id="queen-list-div";
-
 
         const episodeFormDiv = document.createElement("div");
         episodeFormDiv.id="episode-form-div";
@@ -25,16 +27,42 @@ const render=(function () {
         const episodeListDiv = document.createElement("div");
         episodeListDiv.id="episode-list-div";
 
-        document.body.appendChild(queenFormDiv)
-        document.body.appendChild(queenListDiv);
-        document.body.appendChild(episodeFormDiv)
-        document.body.appendChild(episodeListDiv);
+        // Create headers
+        const createTextElement = function(type, text) {
+            const outputElement = document.createElement(type);
+            outputElement.innerText = text;
+            return outputElement;
+        }
 
-        addQueen();
-        addEpisode();
+        const queenHeader = createTextElement("h2", "Queens");
+        const episodeHeader = createTextElement("h2", "Episodes");
+        const queenText = createTextElement("p", "Enter the names of the queens to compete");
+        const episodeText = createTextElement("p", "Use the drop down or enter custom text to decide what challenges the queens will face");
+
+        document.body.appendChild(mainDiv);
+        mainDiv.appendChild(queenFormDiv)
+        queenFormDiv.appendChild(queenHeader);
+        queenFormDiv.appendChild(queenText);
+        mainDiv.appendChild(queenListDiv);
+        mainDiv.appendChild(episodeFormDiv);
+        episodeFormDiv.appendChild(episodeHeader);
+        episodeFormDiv.appendChild(episodeText);
+        mainDiv.appendChild(episodeListDiv);
+
+        addQueenForm();
+        addEpisodeForm();
+
+        storage.getData();
+        competitionData.queens.forEach(queen => {
+            render.displayElement("queen", queen.name, queen.id);
+        })
+        
+        competitionData.episodes.forEach(episode => {
+            render.displayElement("episode", episode.name, episode.id);
+        })
     }
     
-    const addQueen = function () {
+    const addQueenForm = function () {
         const queenForm = document.createElement("form");
         queenForm.id = "queen-form";
         
@@ -58,10 +86,10 @@ const render=(function () {
         const queenFormDiv = document.getElementById("queen-form-div");
         queenFormDiv.appendChild(queenForm);
 
-        console.log("render.addQueen: Queen input form created");
+        console.log("render.addQueenForm: Queen input form created");
     }
 
-    const addEpisode = function () {
+    const addEpisodeForm = function () {
         const episodeForm = document.getElementById("episode-form-div");
 
         const addEpisodeDiv = document.createElement("div");
@@ -115,7 +143,7 @@ const render=(function () {
             console.log(`render.displayElements: `, name, ` added to ${type} list`);
     })
 
-    return {init, addQueen, displayElement};
+    return {init, addQueenForm, displayElement};
 })();
 
 const control=(function() {
@@ -135,30 +163,28 @@ const control=(function() {
                 competitionData.queens.push(queen);
                 render.displayElement("queen", queen.name, queen.id);
                 console.log(`control.queenForm: List of queens is ${competitionData.queens.map(q => q.name).join(", ")}`)
+                storage.saveData("queens");
                 return {queen}
             }
         })
     }
 
-    const queenListRemove = function () {
-        // const removeButtons = document.querySelectorAll(".queen-list-remove");
-
-        // removeButtons.forEach(button => {
+    const listElementRemove = function (type) {
             document.body.addEventListener("click", (e) => {
-                if (e.target.classList.contains("queen-list-remove")) {
+                if (e.target.classList.contains(`${type}-list-remove`)) {
                   const id = e.target.id;
-                  const queenId = Number(id.replace("queen-list-remove-", ""));
+                  const elementID = Number(id.replace(`${type}-list-remove-`, ""));
                   
-                  const queenListDiv = document.getElementById("queen-list-div")
-                  const queenListElement = document.getElementById(`queen-list-element-${queenId}`);
+                  const listDiv = document.getElementById(`${type}-list-div`)
+                  const listElement = document.getElementById(`${type}-list-element-${elementID}`);
 
-                  queenListDiv.removeChild(queenListElement);
+                  listDiv.removeChild(listElement);
                   
-                  competitionData.queens = competitionData.queens.filter(queen => queen.id !== queenId)
-                  console.log(`control.queenListRemove: List of queens is ${competitionData.queens.map(q => q.name).join(", ")}`)
+                  competitionData[`${type}s`] = competitionData[`${type}s`].filter(element => element.id !== elementID)
+                  storage.saveData(`${type}s`);
+                  console.log(`control.listElementRemove: List of ${type}s is ${competitionData[type+"s"].map(q => q.name).join(", ")}`)
                 }
             });
-        // });
     }
 
     const episodeAdd = function() {
@@ -172,16 +198,18 @@ const control=(function() {
                 render.displayElement("episode", episode.name, episode.id);
                 addEpisodeInput.value = "";
                 competitionData.episodes.push(episode);
-                console.log(`control.episodeAdd: List of episodes is ${competitionData.episodes.map(q => q.name).join(", ")}`)
+                console.log(`control.episodeAdd: List of episodes is ${competitionData.episodes.map(q => q.name).join(", ")}`);
+                storage.saveData("episodes");
                 return {episode}
             }
         })
     }
 
-    return {queenAdd, queenListRemove, episodeAdd}
+    return {queenAdd, listElementRemove, episodeAdd}
 })();
 
 const competitionData = (function () {
+    let week=1;
     const queens = [];
 
     const episodeSuggestions = ["Acting", "Ball", "Commerical", "Design", "Girl Group", "Improv", "Makeover", "Roast", "Rusical", "Snatch Game", "Stand-up", "Talent Show"];
@@ -190,7 +218,36 @@ const competitionData = (function () {
     return {queens, episodes, episodeSuggestions}
 })()
 
+// Functions for saving and retrieving data
+const storage = (function() {
+    // Save data
+    const saveData = function(varName) {
+        localStorage.setItem(`RPDRGenerator.${varName}`, JSON.stringify(competitionData[varName]));  
+        console.log(`storage.saveData: ${varName} saved to local storage`);
+    }
+
+    // Read in queen data
+    const getData = function() {
+        const retriever = function (varName) {
+            let storedData = JSON.parse(localStorage.getItem(`RPDRGenerator.${varName}`));
+            if (storedData){
+                console.log(`storage.getData: ${`RPDRGenerator.${varName}`} array retrieved from local storage`);
+                competitionData[varName] = storedData;
+            }
+        }
+
+        retriever("queens");
+        retriever("week");
+        retriever("episodes");
+        // retriever("RPDRGenerator.points", competitionData.points);
+    }
+
+    return {saveData, getData };
+})();
+
+
 render.init();
 control.queenAdd();
-control.queenListRemove();
+control.listElementRemove("queen");
+control.listElementRemove("episode");
 control.episodeAdd();
