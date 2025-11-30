@@ -14,162 +14,193 @@ const render=(function () {
     const init = function () {
         // Create divs
         const mainDiv = document.createElement("main");
-
-        const queenFormDiv = document.createElement("div");
-        queenFormDiv.id="queen-form-div";
-
-        const queenListDiv = document.createElement("div");
-        queenListDiv.id="queen-list-div";
-
-        const episodeFormDiv = document.createElement("div");
-        episodeFormDiv.id="episode-form-div";
-
-        const episodeListDiv = document.createElement("div");
-        episodeListDiv.id="episode-list-div";
-
-        // Create headers
-        const createTextElement = function(type, text) {
-            const outputElement = document.createElement(type);
-            outputElement.innerText = text;
-            return outputElement;
-        }
-
-        const queenHeader = createTextElement("h2", "Queens");
-        const episodeHeader = createTextElement("h2", "Episodes");
-        const queenText = createTextElement("p", "Enter the names of the queens to compete");
-        const episodeText = createTextElement("p", "Use the drop down or enter custom text to decide what challenges the queens will face");
-
         document.body.appendChild(mainDiv);
-        mainDiv.appendChild(queenFormDiv)
-        queenFormDiv.appendChild(queenHeader);
-        queenFormDiv.appendChild(queenText);
-        mainDiv.appendChild(queenListDiv);
-        mainDiv.appendChild(episodeFormDiv);
-        episodeFormDiv.appendChild(episodeHeader);
-        episodeFormDiv.appendChild(episodeText);
-        mainDiv.appendChild(episodeListDiv);
-
-        addQueenForm();
-        addEpisodeForm();
 
         storage.getData();
-        competitionData.queens.forEach(queen => {
-            render.displayElement("queen", queen.name, queen.id);
-        })
-        
-        competitionData.episodes.forEach(episode => {
-            render.displayElement("episode", episode.name, episode.id);
-        })
-    }
-    
-    const addQueenForm = function () {
-        const queenForm = document.createElement("form");
-        queenForm.id = "queen-form";
-        
-        const addQueenLabel = document.createElement("label");
-        addQueenLabel.textContent = "Add Queen";
-        addQueenLabel.htmlFor = "add-queen-input";
 
-        const addQueenInput = document.createElement("input");
-        addQueenInput.type = "text";
-        addQueenInput.id = "add-queen-input";
-        addQueenInput.name = "add-queen-input";
+        function buildSection(type, displayText) {
+            const typeCapitalised = type.charAt(0).toUpperCase() + type.slice(1) + "s";
 
-        const addQueenButton = document.createElement("button");
-        addQueenButton.type = "submit";
-        addQueenButton.textContent = "Add";
+            const mainTypeDiv = document.createElement("div");
+            mainTypeDiv.id = `main-${type}-div`;
 
-        queenForm.appendChild(addQueenLabel);
-        queenForm.appendChild(addQueenInput);
-        queenForm.appendChild(addQueenButton);
+            const formDiv = document.createElement("div");
+            formDiv.id = `${type}-form-div`;
 
-        const queenFormDiv = document.getElementById("queen-form-div");
-        queenFormDiv.appendChild(queenForm);
+            const header = document.createElement("h2");
+            header.innerText = `${typeCapitalised}`;
 
-        console.log("render.addQueenForm: Queen input form created");
-    }
+            const text = document.createElement("p");
+            text.innerText=displayText;
+            
+            const listDiv = document.createElement("ul");
+            listDiv.id = `${type}-list-div`;
+            
+            const resetButton = document.createElement("button");
+            resetButton.id = `${type}-reset-button`;
+            resetButton.innerText = `Reset ${typeCapitalised}`
+            
+            mainDiv.appendChild(mainTypeDiv);
+            mainTypeDiv.appendChild(header);
+            mainTypeDiv.appendChild(text);
+            mainTypeDiv.appendChild(listDiv);
+            mainTypeDiv.appendChild(formDiv);
+            mainTypeDiv.appendChild(resetButton);
+            addForm(type);
 
-    const addEpisodeForm = function () {
-        const episodeForm = document.getElementById("episode-form-div");
-
-        const addEpisodeDiv = document.createElement("div");
-        addEpisodeDiv.id = "add-episode-div";
-
-        const episodeDataList = document.createElement("datalist");
-        episodeDataList.id = "episode-suggestions";
-
-        const addOption = function (optionName) {
-            const optionElement = document.createElement("option");
-            optionElement.value = optionName;
-            episodeDataList.appendChild(optionElement);
+            competitionData[`${type}s`].forEach(element => {
+                render.displayListElement(type, element.name, element.id);
+            })
+            
         }
 
-        competitionData.episodeSuggestions.forEach(suggestion => {
-            addOption(suggestion)
-        });
+        buildSection("queen", "Enter the names of the queens to compete");
+        buildSection("episode", "Use the drop down or enter custom text to decide what challenges the queens will face");
+        arrowButtonHide();
+    }
+    
+    const addForm = function (type) {
+        const form = document.createElement("form");
+        form.id = `${type}-form`;
+        
+        const inputLabel = document.createElement("label");
+        // inputLabel.textContent = "";
+        inputLabel.htmlFor = `add-${type}-input`;
 
-        const episodeInput = document.createElement("input");
-        episodeInput.id = "add-episode-input";
-        episodeInput.name = "add-episode-input";
-        episodeInput.setAttribute("list", "episode-suggestions");
+        const input = document.createElement("input");
+        input.id = `add-${type}-input`;
+        input.name = `add-${type}-input`;
 
+        const submitButton = document.createElement("button");
+        submitButton.type = "submit";
+        submitButton.textContent = "Add";
 
-        const confirmButton = document.createElement("button");
-        confirmButton.id = "confirm-episode-button";
-        confirmButton.textContent = "Add";
+        form.appendChild(inputLabel);
+        form.appendChild(input);
+        form.appendChild(submitButton);
 
-        addEpisodeDiv.appendChild(episodeDataList);
-        addEpisodeDiv.appendChild(episodeInput);
-        addEpisodeDiv.appendChild(confirmButton);
-        episodeForm.appendChild(addEpisodeDiv);
+        if (type==="episode") {
+            const episodeDataList = document.createElement("datalist");
+            episodeDataList.id = "episode-suggestions";
+
+            const addOption = function (optionName) {
+                const optionElement = document.createElement("option");
+                optionElement.value = optionName;
+                episodeDataList.appendChild(optionElement);
+            }
+
+            competitionData.episodeSuggestions.forEach(suggestion => {
+                addOption(suggestion)
+            });
+
+            form.appendChild(episodeDataList);
+            input.setAttribute("list", "episode-suggestions");
+        }
+
+        const formDiv = document.getElementById(`${type}-form-div`);
+        formDiv.appendChild(form);
+
+        console.log(`render.addForm: ${type} input form created`);
     }
 
-    const displayElement = (function (type, name, id) {
-            const elementDiv = document.createElement("div");
-            // queenDiv.id = album.id;
-            elementDiv.classList = `${type}-list-element`;
-            elementDiv.id = `${type}-list-element-${id}`;
-            elementDiv.innerText = name;
+    const arrowButtonHide = function () {
+        for (let index = 0; index < competitionData.episodes.length; index++) {
+            const id = competitionData.episodes[index].id;
 
+            const upButton = document.getElementById(`episode-up-${id}`);
+            const downButton = document.getElementById(`episode-down-${id}`);    
+
+            if (index===0) {upButton.style.display = "none"} 
+            else {upButton.style.display = "inline"};
+
+            if (index===competitionData.episodes.length-1) {downButton.style.display = "none"} 
+            else {downButton.style.display = "inline"};
+        }
+
+    }
+
+    const displayListElement = (function (type, name, id) {
+            const elementListItem = document.createElement("li");
+            // queenDiv.id = album.id;
+            elementListItem.classList = `${type}-list-element`;
+            elementListItem.id = `${type}-list-element-${id}`;
+            elementListItem.innerText = name;
+
+            const buttonDiv = document.createElement("span");
+            buttonDiv.classList="list-buttons";
+
+            if (type === "episode") {
+
+                // Determine the index of this episode in competitionData
+                const episodes = competitionData.episodes;
+                const index = episodes.findIndex(ep => ep.id === id);
+            
+                // Create a container for the arrows
+                buttonDiv.classList.add("episode-arrows");
+            
+                // Create UP arrow (▲)
+                    const upButton = document.createElement("button");
+                    upButton.classList = "episode-up";
+                    upButton.id = `episode-up-${id}`;
+                    upButton.innerText = "▲";
+                    buttonDiv.appendChild(upButton);
+            
+                // Create DOWN arrow (▼)
+                    const downButton = document.createElement("button");
+                    downButton.classList = "episode-down";
+                    downButton.id = `episode-down-${id}`;
+                    downButton.innerText = "▼";
+                    buttonDiv.appendChild(downButton);
+
+                
+            
+                // Append arrow buttons to the list item
+            }
+            
             const removeButton = document.createElement(`button`);
             removeButton.classList = `${type}-list-remove`;
             removeButton.id = `${type}-list-remove-${id}`;
             removeButton.innerText = `x`;
-
-            elementDiv.appendChild(removeButton);
+            buttonDiv.appendChild(removeButton);
 
             const elementListDiv = document.getElementById(`${type}-list-div`);
-            elementListDiv.appendChild(elementDiv);
-            console.log(`render.displayElements: `, name, ` added to ${type} list`);
+            elementListDiv.appendChild(elementListItem);
+
+            elementListItem.appendChild(buttonDiv);
+
+            console.log(`render.displayListElements: ${name} added to ${type} list`);
     })
 
-    return {init, addQueenForm, displayElement};
+    return {init, displayListElement, arrowButtonHide};
 })();
 
 const control=(function() {
-    let queenID = 0;
-    let episodeID = 0;
+    let counters = {
+        queen: 0,
+        episode: 0
+    }
 
-    const queenAdd = function() {
-        const queenForm = document.getElementById("queen-form");
-        const addQueenInput = document.getElementById("add-queen-input");
+    const elementAdd = function(type) {
+        const form = document.getElementById(`${type}-form`);
+        const addInput = document.getElementById(`add-${type}-input`);
 
-        queenForm.addEventListener("submit", function(e) {
+        form.addEventListener("submit", function(e) {
             e.preventDefault();
 
-            if (addQueenInput.value) {
-                const queen = {name: addQueenInput.value, id: queenID++};
-                addQueenInput.value = "";
-                competitionData.queens.push(queen);
-                render.displayElement("queen", queen.name, queen.id);
-                console.log(`control.queenForm: List of queens is ${competitionData.queens.map(q => q.name).join(", ")}`)
-                storage.saveData("queens");
-                return {queen}
+            if (addInput.value) {
+                const element = {name: addInput.value, id: control.counters[type]++};
+                addInput.value = "";
+                competitionData[`${type}s`].push(element);
+                render.displayListElement(`${type}`, element.name, element.id);
+                render.arrowButtonHide();
+                console.log(`control.elementAdd: List of ${type}s is ${competitionData[type+"s"].map(element => element.name).join(", ")}`)
+                storage.saveData(`${type}s`);
+                storage.saveCounters();
             }
         })
     }
 
-    const listElementRemove = function (type) {
+    const elementRemove = function (type) {
             document.body.addEventListener("click", (e) => {
                 if (e.target.classList.contains(`${type}-list-remove`)) {
                   const id = e.target.id;
@@ -180,40 +211,76 @@ const control=(function() {
 
                   listDiv.removeChild(listElement);
                   
+                  console.log(`control.elementRemove: ${competitionData[`${type}s`].filter(element => element.id === elementID).map(q => q.name)} removed from list of ${type}s`)
+
                   competitionData[`${type}s`] = competitionData[`${type}s`].filter(element => element.id !== elementID)
                   storage.saveData(`${type}s`);
-                  console.log(`control.listElementRemove: List of ${type}s is ${competitionData[type+"s"].map(q => q.name).join(", ")}`)
+                  console.log(`control.elementRemove: List of ${type}s is ${competitionData[type+"s"].map(q => q.name).join(", ")}`)
                 }
             });
     }
 
-    const episodeAdd = function() {
-        const episodeFormDiv = document.getElementById("episode-form-div");
-        const addEpisodeInput = document.getElementById("add-episode-input");
-        const addEpisodeButton = document.getElementById("confirm-episode-button");
-        
-        addEpisodeButton.addEventListener("click", () => {
-            if (addEpisodeInput.value) {
-                const episode = {name: addEpisodeInput.value, id: episodeID++};
-                render.displayElement("episode", episode.name, episode.id);
-                addEpisodeInput.value = "";
-                competitionData.episodes.push(episode);
-                console.log(`control.episodeAdd: List of episodes is ${competitionData.episodes.map(q => q.name).join(", ")}`);
+    const arrowListener = function(dir) {
+        document.body.addEventListener("click", (e) => {
+            if (e.target.classList.contains(`episode-${dir}`)) {
+                const id = Number(e.target.id.split("-").pop());
+
+                const position = competitionData.episodes.findIndex(ep => ep.id === id);
+                const episodeDiv = document.getElementById(`episode-list-element-${id}`);
+                
+                if (dir==="up"){
+                    const previous = episodeDiv.previousElementSibling;
+                    episodeDiv.parentNode.insertBefore(episodeDiv, previous);
+                    const targetposition = position-1;
+                    [competitionData.episodes[position], competitionData.episodes[targetposition]] = [competitionData.episodes[targetposition], competitionData.episodes[position]];
+                }
+                if (dir==="down"){
+                    const next = episodeDiv.nextElementSibling;
+                    episodeDiv.parentNode.insertBefore(next, episodeDiv);
+                    const targetposition = position+1;
+                    [competitionData.episodes[position], competitionData.episodes[targetposition]] = [competitionData.episodes[targetposition], competitionData.episodes[position]];
+                }
+                render.arrowButtonHide();
                 storage.saveData("episodes");
-                return {episode}
             }
         })
     }
 
-    return {queenAdd, listElementRemove, episodeAdd}
+    const resetListener = function(type) {
+        const resetButton = document.getElementById(`${type}-reset-button`);
+
+        resetButton.addEventListener("click", () => {
+            competitionData[`${type}s`] = [];
+            const listDiv = document.getElementById(`${type}-list-div`);
+            listDiv.innerHTML = "";
+            control.counters[type] = 0;
+            storage.saveData(`${type}s`);
+            storage.saveCounters();
+        })
+    }
+
+    const init = function () {
+
+        ["queen", "episode"].forEach(type => {
+            elementAdd(type);
+            elementRemove(type);
+            resetListener(type);
+        })
+
+        arrowListener("up");
+        arrowListener("down");
+
+    }
+
+    return {init, counters}
 })();
 
 const competitionData = (function () {
     let week=1;
-    const queens = [];
+    let queens = [];
 
     const episodeSuggestions = ["Acting", "Ball", "Commerical", "Design", "Girl Group", "Improv", "Makeover", "Roast", "Rusical", "Snatch Game", "Stand-up", "Talent Show"];
-    const episodes = [];
+    let episodes = [];
 
     return {queens, episodes, episodeSuggestions}
 })()
@@ -224,6 +291,11 @@ const storage = (function() {
     const saveData = function(varName) {
         localStorage.setItem(`RPDRGenerator.${varName}`, JSON.stringify(competitionData[varName]));  
         console.log(`storage.saveData: ${varName} saved to local storage`);
+    }
+
+    const saveCounters = function () {
+        localStorage.setItem(`RPDRGenerator.control.counters`, JSON.stringify(control.counters));
+        console.log("storage.saveCounters: control.counters saved to local storage");
     }
 
     // Read in queen data
@@ -239,15 +311,18 @@ const storage = (function() {
         retriever("queens");
         retriever("week");
         retriever("episodes");
+
+        const countersSaved = JSON.parse(localStorage.getItem(`RPDRGenerator.control.counters`));
+        if (countersSaved) {
+            control.counters = countersSaved;
+            console.log("storage.getData: control.counters retrieved from local storage");
+        };
         // retriever("RPDRGenerator.points", competitionData.points);
     }
 
-    return {saveData, getData };
+    return {saveData, saveCounters, getData };
 })();
 
 
 render.init();
-control.queenAdd();
-control.listElementRemove("queen");
-control.listElementRemove("episode");
-control.episodeAdd();
+control.init();
