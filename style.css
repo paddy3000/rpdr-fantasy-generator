@@ -430,3 +430,155 @@ fieldset > legend {
 .queen-image.eliminated {
     filter: grayscale(1);
 }
+
+
+/*********************/
+/* Results table CSS */
+/*********************/
+#results-div {
+    padding: 2rem 0;
+    max-width: min(90rem, 100vw);
+}
+
+#results-table-div {
+    overflow-x: scroll;
+}
+
+#results-chart-div {
+    margin: 4rem 0 2rem 0 ;
+    border: var(--lighter-accent) 0.5rem solid;
+    border-radius: 2rem;
+    padding: 0 min(1rem, 1vw) 0 min(1rem, 1vw);
+}
+
+/* Chart */
+canvas {
+    max-height: min(35rem, 80vh);
+}
+
+/* Table */
+#results-table {
+    font-size: min(1.5rem, 4vw, 4vh);
+}
+
+td, th {
+  padding: 0.2rem;
+}
+
+th {
+    background-color: var(--lighter-accent);
+}
+  
+tr {
+  background-color: var(--white-colour);
+}
+
+thead > tr > th {
+    background-color: var(--lighter-accent);
+}
+
+
+th.queen-name {
+    text-align: left;
+    padding-right: 1.5rem;
+}
+
+.episode-type {
+    font-size: 0.9rem;
+}
+
+tr.out {
+    background-color: auto;
+}
+
+td.result {
+    width: 5rem;
+}
+
+td.result.finale-cell {
+    width: auto;
+    padding: 0 1rem;
+}
+
+.ppe-cell {
+    background: rgb(249, 249, 255);
+    padding: 0.2rem 1rem;
+}
+
+tfoot {
+    font-size: 1.3rem;
+    font-style: italic;  
+}
+
+tfoot td {
+    padding: 1rem 0;  }
+
+/* Set colours for different results */
+#results-table td.result.win,
+#results-table td.result.winner {
+    background-color: var(--win-color);
+}
+
+#results-table td.result.top2 {
+    background-color: var(--top2-color);
+}
+
+#results-table td.result.high {
+    background-color: var(--high-color);
+}
+
+#results-table td.result.low {
+    background-color: var(--low-color);
+}
+
+#results-table td.result.safe {
+    background-color: rgb(249, 249, 255);
+}
+
+#results-table td.result.btm {
+    background-color: var(--bottom-color);
+}
+
+#results-table td.result.elim {
+    background-color: var(--elim-color);
+}
+
+#results-table td.result.quit {
+    background-color: var(--quit-color);
+}
+
+#results-table td.result.winner {
+    background-color: var(--winner-color);
+}
+
+#results-table td.result.runnerup {
+    background-color: var(--runnerup-color);
+}
+
+#results-table td.result.finale-cell.elim {
+    background-color: var(--elimfinale-color);
+}
+
+#results-table td.result.returning {
+    border: lime 0.3rem solid;
+}
+
+/*****************/
+/* Feedback form */
+/*****************/
+
+#feedback-form-div {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-top: 140%;
+}
+
+#feedback-form-div iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }

@@ -92,7 +92,7 @@ const display = (function(){
         select.id=id;
 
         // Select different placements depending on whether or not it is the finale episode
-        const placementsArray = competitionData.week < competitionData.episodes.length ? competitionData.placements.slice() : competitionData.finalePlacements.slice();
+        const placementsArray = competitionData.week <= competitionData.episodes.length ? competitionData.placements.slice() : competitionData.finalePlacements.slice();
 
         // Add each placement to the dropdown
         for (let i = 0; i <= placementsArray.length-1; i++) {
@@ -190,8 +190,8 @@ const display = (function(){
 
     // Replace placement dropdowns with new select items if moving from or to the finale episode where placements are different
     const updatePlacementDropdownWeek = function() {
-        if ((competitionData.week===competitionData.episodes.length && control.getPreviousWeek()!==competitionData.episodes.length) 
-            || (competitionData.week!==competitionData.episodes.length && control.getPreviousWeek()===competitionData.episodes.length)) {
+        if ((competitionData.week===competitionData.episodes.length+1 && control.getPreviousWeek()!==competitionData.episodes.length) 
+            || (competitionData.week!==competitionData.episodes.length+1 && control.getPreviousWeek()===competitionData.episodes.length)) {
             for (let i=0; i < competitionData.queens.length; i++) {
                 // Remove existing dropdown
                 const queenDropdown = document.getElementById(`queen-dropdown${i}`);
@@ -280,6 +280,8 @@ const display = (function(){
         updateEpisodeHeaders();
         updatePlacementDropdownWeek();
         updatePlacementDropdown();
+
+        storage.saveData("week");
     }
 
     return {init, weekUpdate, updatePlacementDropdown, updatePlacementDropdownWeek}
@@ -381,7 +383,8 @@ const control = (function () {
                     } 
 
                     if (eliminated===false) {
-                        competitionData.queens[i].placements[j].placement = j < competitionData.episodes.length-1 ? "Safe" : "Runner Up";
+                        // competitionData.queens[i].placements[j].placement = j < competitionData.episodes.length-1 ? "Safe" : "Runner Up";
+                        competitionData.queens[i].placements[j].placement = "Safe";
 
                         // Set returns back to false since in the competition
                         competitionData.queens[i].placements[j].returns=false;
@@ -452,3 +455,4 @@ const control = (function () {
 storage.getData();
 display.init()
 control.eventListeners();
+display.weekUpdate();

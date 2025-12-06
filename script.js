@@ -182,7 +182,6 @@ const universalDisplay = (function() {
         const resetButton = document.createElement("button");
         resetButton.textContent="Reset Results";
         resetButton.id="reset-results";
-        
         navResults.appendChild(resetButton);
     }
 
