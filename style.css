@@ -1,5 +1,432 @@
+/* Font to use throughout document */
+@font-face {
+    font-family: Rubik;
+    src: url(fonts/Rubik-VariableFont_wght.ttf);
+    font-style: normal;
+}
+
+/* Set colours that will be used throughout */
+:root {
+    /* Size of border around queen box */
+    --queen-border-size: 0.6rem;
+    
+    /* Colours for different placements */
+    --win-color: rgb(65, 105, 225);
+    --top2-color: rgb(0, 191, 255);
+    --high-color: rgb(173, 216, 230);
+    --low-color: rgb(255, 182, 193);
+    --bottom-color: rgb(255, 99, 71);
+    --elim-color: rgb(255, 0, 0);
+    --quit-color: rgb(219, 112, 147);
+    --winner-color: rgb(255, 255, 0);
+    --runnerup-color: rgb(192, 192, 192);
+    --elimfinale-color: rgb(223, 143, 107);
+
+    --white-colour: #F7F4EB;
+
+    --light-accent: rgb(218, 202, 255);
+    --lighter-accent: rgb(176, 214, 240);
+    --lightest-accent: #ccdce6;
+    --dark-accent: rgb(24, 10, 61);
+    --button-hover-colour: rgb(223, 217, 235);
+
+    --header-font: Rubik;
+
+    /* Size of buttons that will appear in the main header */
+    --button-size: min(3.6rem, 10vw);
+    --header-size: calc(1.8*var(--button-size));
+}
+
+* {
+    font-family: Rubik, Arial, Helvetica, sans-serif;
+}
+
+
+/**********************/
+/* General attributes */
+/**********************/
+
+body {
+    text-align: center;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    background-color: var(--white-colour);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    border: 0.2rem solid var(--dark-accent);
+    background: white;
+    border-radius: 3rem;
+    padding: 0.3rem 1rem;
+    font-family: var(--header-font);
+    font-size: min(2rem, 5vw);
+}
+
+h2 {
+    margin: 0;
+    padding: 1rem;
+    font-family: var(--header-font);
+    color: var(--dark-accent)
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: black;
+
+    padding: 0.2rem 1rem;
+    border-radius: 5rem;
+
+    border: 0.2rem solid black;
+    box-shadow: -0.2rem 0.2rem var(--dark-accent);
+    background: var(--white-colour);
+}
+
+form > button {
+    display: inline;
+    margin: 0 0 0 0.5rem;
+}
+
+@media (hover: hover) {
+    button:hover {
+        background: var(--button-hover-colour);
+        cursor: pointer;
+    }
+}
+
+/****************/
+/* Main heading */
+/****************/
+
+#main-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--light-accent);
+    padding: 0 min(2vw, calc(var(--button-size)*0.4));
+    border-bottom: 0.2rem var(--dark-accent) solid;
+    width: 98vw;
+    height: var(--header-size);
+}
+
+#main-heading-right {
+    display: flex;
+}
+
+/* Adjust size of the buttons and the elements that go inside them depending on screen size */
+#main-heading-right button {
+    height: var(--button-size);
+    width: var(--button-size);
+    aspect-ratio: 1 / 1;
+    margin-left: 0.6rem;
+
+    font-size: calc(0.7*var(--button-size));
+    font-family: monospace;
+}
+
+#main-heading-right img {
+    height: calc(0.6*var(--button-size));
+}
+
+#main-heading-right a {
+    display: flex;
+}
+
+#home-button img {
+    height: calc(0.55*var(--button-size));
+    padding: 0 0 calc(0.06*var(--button-size)) 0 ;
+}
+
+#settings-button {
+    padding: calc(0.1*var(--button-size)) calc(0.17*var(--button-size));
+}
+
+/****************/
+/* Control page */
+/****************/
+
 .queen-list-element,
 .episode-list-element {
     display: flex;
     justify-content: space-between;
+}
+
+button.queen-list-remove,
+button.episode-list-remove,
+button.episode-down,
+button.episode-up {
+    display: inline;
+    margin: 0.1rem 0.3rem;
+}
+
+
+button.queen-list-remove,
+button.episode-list-remove {
+    padding: 0.1rem 0.5rem;
+}
+
+button.episode-down,
+button.episode-up { 
+    padding: 0.1rem 0.3rem;
+}
+
+
+/********************************/
+/* Subheadings and episode info */
+/********************************/
+
+.subheading-div {
+    border: var(--lighter-accent) 0.4rem solid;
+    border-radius: 4rem;
+    color: var(--dark-accent);
+    margin: 2rem 0 0 0 ;
+    display: flex;
+    flex-direction: column;
+    padding: 0 2rem;
+}
+
+#episode-info {
+    /* min-height: 15rem; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: min(75vw, 65rem);
+    box-sizing: border-box;
+}
+
+#synopsis,
+.results-chart-footnote {
+    font-style: italic;
+}
+
+/******************/
+/* Navigation div */
+/******************/
+
+#nav-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--light-accent);
+    border-top: 0.2rem var(--dark-accent) solid;
+    padding:  0;
+    padding: 1rem 0;
+    width: 100vw;
+}
+
+/* Arrows */
+.arrow-button  {
+    height: 2.5rem;
+    width: 2.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.arrow-button > img {
+    height: 2rem;
+    width: 2rem;
+}
+
+/* Weeks dropdown */
+#nav-weeks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+#nav-results {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    padding-top: 1rem;
+}
+
+select {
+    font-size: min(1.1rem, 5vw);
+    color: black;
+    padding: 0.2rem 1rem;
+    border-radius: 0.4rem;
+    border: 0;
+    text-align: center;
+}
+
+select#week-select {
+    border: rgba(50,17,35,255) 0.15rem solid;
+    background-color: var(--white-colour);
+    color: var(--dark-accent);
+    font-weight: bold;
+    padding: 0.3rem 1.2rem;
+}
+
+@media (hover: hover) {
+    select:hover {
+        cursor: pointer;
+    }
+}
+
+
+/*****************************************/
+/* Information and settings pop-up boxes */
+/*****************************************/
+
+/* General formatting */
+
+#info-div,
+#settings-div {
+    border: 0.3rem solid var(--dark-accent);
+    padding: 1rem min(3rem, 7vw);
+    background-color: var(--lightest-accent);
+    position: fixed;
+    z-index: 999;
+    border-radius: 1rem;
+}
+
+#info-div {
+    top: 20vh;
+}
+
+#settings-div {
+    width: auto;
+    top: 20vh;
+}
+
+/* Settings form */
+#settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+    text-align: center;
+}
+
+#settings-form label {
+   padding: 0 1rem 0 0;
+   font-weight: bold;
+}
+
+fieldset {
+  border: 0;
+}
+
+fieldset > legend {
+  font-weight: bold;
+  padding: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+#settings-form > fieldset > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+  
+#settings-form input[type="number"] {
+  width: 60px;
+  padding: 4px;
+}  
+
+/* Close button */
+.close-button {
+  display: flex;
+  font-size: 1rem;
+  aspect-ratio: 1 / 1;
+  padding: 0.3rem;
+  margin-left: 0.6rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.close-button-image {
+    aspect-ratio: 1 / 1;
+    height: 1rem;
+}
+
+/**************/
+/* Queens div */
+/**************/
+
+/* Overall formatting of div with all the queens inside */
+#queens-div {
+    --queen-image-width: min(35vw, 12rem); /* Ensure at least two queens on each row even on small screens*/
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: min(2rem, 10rem);
+    padding: 2rem 0;
+    justify-content: center;
+    width: min(100vw, calc(var(--queen-image-width)*8)); /* This ensures a max of 5 queens on each row when padding taken into account */
+    justify-self: center;
+    width: 30vw;
+    /* width: 100w; */
+}
+
+/* On large screens queen-div should have enough room to include radio buttons and placement dropdown so that all images line up even if both of these elements don't appear */
+/* On small screens height can be smaller to fit more queens on the screen */
+.queen-div {
+    min-height: min(100px, 10vh);
+}
+
+
+
+/* Add border to queen images depending on placement that week */
+/* Padding is replaced with border so that all images line up with each other regardless of whether or not they have a border */
+.queen-image-box.win, 
+.queen-image-box.top2 {
+    border: var(--win-color) solid var(--queen-border-size);
+    padding: 0;
+}
+
+.queen-image-box.bottom, 
+.queen-image-box.eliminated {
+    border: var(--elim-color) solid var(--queen-border-size);
+    padding: 0;
+}
+
+.queen-image-box.eliminated.finale {
+    border: var(--elimfinale-color) solid var(--queen-border-size);
+    padding: 0;
+}
+
+.queen-image-box.winner {
+    border: var(--winner-color) solid var(--queen-border-size);
+    padding: 0;
+}
+
+.queen-image-box.runnerup {
+    border: var(--runnerup-color) solid var(--queen-border-size);
+    padding: 0;
+}
+
+.queen-image-box.quit {
+    border: var(--quit-color) solid var(--queen-border-size);
+    padding: 0;
+}
+
+.queen-div.out {
+  display: none;
+}
+
+.queen-image.out,
+.queen-image.quit,
+.queen-image.eliminated {
+    filter: grayscale(1);
 }

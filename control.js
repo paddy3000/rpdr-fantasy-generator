@@ -13,8 +13,7 @@
 const render=(function () {
     const init = function () {
         // Create divs
-        const mainDiv = document.createElement("main");
-        document.body.appendChild(mainDiv);
+        const mainDiv = document.querySelector("main");
 
         storage.getData();
 
@@ -36,16 +35,13 @@ const render=(function () {
             const listDiv = document.createElement("ul");
             listDiv.id = `${type}-list-div`;
             
-            const resetButton = document.createElement("button");
-            resetButton.id = `${type}-reset-button`;
-            resetButton.innerText = `Reset ${typeCapitalised}`
+
             
             mainDiv.appendChild(mainTypeDiv);
             mainTypeDiv.appendChild(header);
             mainTypeDiv.appendChild(text);
             mainTypeDiv.appendChild(listDiv);
             mainTypeDiv.appendChild(formDiv);
-            mainTypeDiv.appendChild(resetButton);
             addForm(type);
 
             competitionData[`${type}s`].forEach(element => {
@@ -57,9 +53,27 @@ const render=(function () {
         buildSection("queen", "Enter the names of the queens to compete");
         buildSection("episode", "Use the drop down or enter custom text to decide what challenges the queens will face");
         arrowButtonHide();
+
+        const navDiv = document.getElementById("nav-div")
+
+
+        // Link to feedback page
+        const choosePlacementsLink = document.createElement("a");
+        choosePlacementsLink.href = "placements.html";
+
+        const choosePlacementsButton = document.createElement("button");
+        choosePlacementsButton.id = "choose-placements-button";
+        choosePlacementsButton.innerText = "Choose Placements";
+
+        choosePlacementsButton.addEventListener("click", placements.fillPlacements)
+
+        navDiv.appendChild(choosePlacementsLink);
+        choosePlacementsLink.appendChild(choosePlacementsButton);
     }
     
     const addForm = function (type) {
+        const typeCapitalised = type.charAt(0).toUpperCase() + type.slice(1) + "s";
+
         const form = document.createElement("form");
         form.id = `${type}-form`;
         
@@ -97,6 +111,12 @@ const render=(function () {
             input.setAttribute("list", "episode-suggestions");
         }
 
+        const resetButton = document.createElement("button");
+        resetButton.id = `${type}-reset-button`;
+        resetButton.innerText = `Reset ${typeCapitalised}`
+
+        form.appendChild(resetButton);
+
         const formDiv = document.getElementById(`${type}-form-div`);
         formDiv.appendChild(form);
 
@@ -113,13 +133,16 @@ const render=(function () {
             if (index===0) {upButton.style.display = "none"} 
             else {upButton.style.display = "inline"};
 
-            if (index===competitionData.episodes.length-1) {downButton.style.display = "none"} 
+            if (index===competitionData.episodes.length-1) {
+                downButton.style.display = "none";
+                // upButton.style.marginRight = "2.8rem";
+            } 
             else {downButton.style.display = "inline"};
         }
 
     }
 
-    const displayListElement = (function (type, name, id) {
+    const displayListElement = function (type, name, id) {
             const elementListItem = document.createElement("li");
             // queenDiv.id = album.id;
             elementListItem.classList = `${type}-list-element`;
@@ -169,7 +192,7 @@ const render=(function () {
             elementListItem.appendChild(buttonDiv);
 
             console.log(`render.displayListElements: ${name} added to ${type} list`);
-    })
+    }
 
     return {init, displayListElement, arrowButtonHide};
 })();
@@ -189,6 +212,7 @@ const control=(function() {
 
             if (addInput.value) {
                 const element = {name: addInput.value, id: control.counters[type]++};
+                if (type=="queen") {element.placements = []};
                 addInput.value = "";
                 competitionData[`${type}s`].push(element);
                 render.displayListElement(`${type}`, element.name, element.id);
@@ -201,7 +225,7 @@ const control=(function() {
     }
 
     const elementRemove = function (type) {
-            document.body.addEventListener("click", (e) => {
+            document.querySelector("main").addEventListener("click", (e) => {
                 if (e.target.classList.contains(`${type}-list-remove`)) {
                   const id = e.target.id;
                   const elementID = Number(id.replace(`${type}-list-remove-`, ""));
@@ -209,19 +233,20 @@ const control=(function() {
                   const listDiv = document.getElementById(`${type}-list-div`)
                   const listElement = document.getElementById(`${type}-list-element-${elementID}`);
 
-                  listDiv.removeChild(listElement);
+                  listElement.remove();
                   
                   console.log(`control.elementRemove: ${competitionData[`${type}s`].filter(element => element.id === elementID).map(q => q.name)} removed from list of ${type}s`)
 
                   competitionData[`${type}s`] = competitionData[`${type}s`].filter(element => element.id !== elementID)
                   storage.saveData(`${type}s`);
+                  if (type=="episode") {render.arrowButtonHide()};
                   console.log(`control.elementRemove: List of ${type}s is ${competitionData[type+"s"].map(q => q.name).join(", ")}`)
                 }
             });
     }
 
     const arrowListener = function(dir) {
-        document.body.addEventListener("click", (e) => {
+        document.querySelector("main").addEventListener("click", (e) => {
             if (e.target.classList.contains(`episode-${dir}`)) {
                 const id = Number(e.target.id.split("-").pop());
 
@@ -259,6 +284,24 @@ const control=(function() {
         })
     }
 
+    // const generateResultsTable = function() {
+    //     for (let i = 0; i < competitionData.queens.length; i++) {
+    //         // if (!competitionData.queens[i].placements) {
+    //             competitionData.queens[i].placement = Array(competitionData.episodes.length).fill("Safe");
+    //             competitionData.queens[i].return = Array(competitionData.episodes.length).fill(false);
+    //             console.log(`generateResultsTable: Generic result vector created for ${competitionData.queens[i].name}`)
+    //         // }
+    //     }
+    // }
+
+    // const placementsListener = function() {
+    //     const resetButton = document.getElementById("choose-placements-button");
+
+    //     resetButton.addEventListener("click", () => {
+    //         generateResultsTable();
+    //     })
+    // }
+
     const init = function () {
 
         ["queen", "episode"].forEach(type => {
@@ -269,6 +312,7 @@ const control=(function() {
 
         arrowListener("up");
         arrowListener("down");
+        // placementsListener();
 
     }
 
@@ -282,7 +326,48 @@ const competitionData = (function () {
     const episodeSuggestions = ["Acting", "Ball", "Commerical", "Design", "Girl Group", "Improv", "Makeover", "Roast", "Rusical", "Snatch Game", "Stand-up", "Talent Show"];
     let episodes = [];
 
-    return {queens, episodes, episodeSuggestions}
+    const placements=["Win", "Top 2", "High", "Safe", "Low", "Bottom", "Eliminated", "Quit", "Out"];
+    const finalePlacements=["Winner", "Runner up", "Eliminated"]
+
+    return {week, queens, episodes, episodeSuggestions, placements, finalePlacements}
+})()
+
+
+const placements = (function() {
+    const fillPlacements = function() {
+        competitionData.queens.forEach(queen => {
+            if (queen.placements === undefined || queen.placements.length == 0) {
+                // create from scratch
+                for (let i = 0; i < competitionData.episodes.length; i++) {
+                    const newEp = { placement: "Safe", returns: false, episodeID: competitionData.episodes[i].id };
+                    queen.placements.push(newEp);
+                }
+            } else {
+                // ensure correct order and fill missing episodes
+                const newPlacementArray = [];
+                competitionData.episodes.forEach(episode => {
+                    let episodePresent = false;
+
+                    queen.placements.forEach(placement => {
+                        if (placement.episodeID === episode.id) {
+                            newPlacementArray.push(placement);
+                            episodePresent = true;
+                        }
+                    });
+
+                    if (episodePresent === false) {
+                        const newEp = { placement: "Safe", returns: false, episodeID: episode.id };
+                        newPlacementArray.push(newEp);
+                    }
+                });
+
+                queen.placements = newPlacementArray;
+            };
+        });
+        storage.saveData("queens");
+    };
+
+    return {fillPlacements}
 })()
 
 // Functions for saving and retrieving data
@@ -323,6 +408,14 @@ const storage = (function() {
     return {saveData, saveCounters, getData };
 })();
 
+const control_script = function(){
+    storage.getData();
+    
+    universalDisplay.init(false, true, false);
+    render.init();
+    control.init();
+}
 
-render.init();
-control.init();
+
+import {images, universalControl, universalDisplay} from "./script.js";
+export {competitionData, control_script, storage}
