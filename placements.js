@@ -171,6 +171,7 @@ const display = (function(){
         updateEpisodeHeaders();
         displayQueens();
         createArrows();
+        universalDisplay.createHomeButton();
         universalDisplay.createResultsButton();
         universalDisplay.createResetButton();
         updatePlacementDropdown()

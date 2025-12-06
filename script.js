@@ -83,30 +83,6 @@ const universalDisplay = (function() {
         leftDiv.appendChild(heading);
     };
 
-    // Create Home Button
-    const createHomeButton = function() {
-        // Get div that button will sit inside
-        const rightDiv = document.getElementById("main-heading-right");
-        
-        // Link to home page
-        const homeLink = document.createElement("a");
-        homeLink.href = "index.html";
-
-        // Home button
-        const homeButton = document.createElement("button");
-        homeButton.id = "home-button";
-
-        // Add image
-        const homeImg = document.createElement("img");
-        homeImg.src = images.home;
-        homeImg.alt = "Home";
-
-        // Put everything together
-        homeLink.appendChild(homeButton);
-        homeButton.appendChild(homeImg);
-        rightDiv.appendChild(homeLink);
-    };
-
     // Create info button
     const createInfoButton = function() {
         // Get div that button will sit inside
@@ -166,7 +142,6 @@ const universalDisplay = (function() {
 
     // General function for creating buttons that should take boolean inputs
     const createButtons = function(createHome, createInfo, createSettings, createFeedback) {
-        if (createHome) {createHomeButton()};
         if (createInfo) {createInfoButton()};
         if (createSettings) {createSettingsButton()};
         if (createFeedback) {createFeedbackButton()};
@@ -192,7 +167,7 @@ const universalDisplay = (function() {
 
         const choosePlacementsButton = document.createElement("button");
         choosePlacementsButton.id = "choose-placements-button";
-        choosePlacementsButton.innerText = "Choose Placements";
+        choosePlacementsButton.innerText = "Assign Placements";
 
         navDiv.appendChild(choosePlacementsLink);
         choosePlacementsLink.appendChild(choosePlacementsButton);
@@ -224,13 +199,29 @@ const universalDisplay = (function() {
         
         // Create button
         const resetButton = document.createElement("button");
-        resetButton.textContent="Reset Results";
+        resetButton.textContent="Reset Placements";
         resetButton.id="reset-results";
         navDiv.appendChild(resetButton);
     }
 
+    // Create Choose Queens Button
+    const createHomeButton = function() {
+        // Get div that button will sit inside
+        const navDiv = document.getElementById("nav-buttons-div");
+        
+        // Link to home page
+        const homeLink = document.createElement("a");
+        homeLink.href = "index.html";
 
+        // Home button
+        const homeButton = document.createElement("button");
+        homeButton.id = "home-button";
+        homeButton.innerText="Choose Queens";
 
+        // Put everything together
+        homeLink.appendChild(homeButton);
+        navDiv.appendChild(homeLink);
+    };
 
     const init = function(createHome, createInfo, createSettings) {
         createHeading();
@@ -241,7 +232,7 @@ const universalDisplay = (function() {
         createInfoBox();
     }
 
-    return {init, createHeading, createButtons, createNavDiv, createInfoBox, createResetButton, createCloseButton, createPlacementsButton, createResultsButton};
+    return {init, createHeading, createButtons, createNavDiv, createInfoBox, createResetButton, createCloseButton, createPlacementsButton, createResultsButton, createHomeButton};
 })();
 
 // // Create functions that will be used to control the site

@@ -40,6 +40,7 @@ const displayGeneric = (function() {
         universalDisplay.createNavDiv();
         const navDiv = document.getElementById("nav-div");
 
+        universalDisplay.createHomeButton();
         universalDisplay.createPlacementsButton();
         universalDisplay.createResetButton();
     };
