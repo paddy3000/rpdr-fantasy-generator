@@ -363,7 +363,7 @@ export {competitionData, control_script, storage}
 const control_script = function(){
     storage.getData();
     
-    universalDisplay.init(false, true, false);
+    universalDisplay.init(true, false);
     render.init();
     control.init();
 }

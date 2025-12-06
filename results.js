@@ -1,7 +1,7 @@
 
 import { competitionData, storage} from "./control.js";
 import {images, universalControl, universalDisplay} from "./script.js";
-import {points, isEliminated, updatePlacements, resetResults, updatePlacementsAll} from "./placementControl.js"
+import {points, isEliminated, updatePlacements, resetResults, updatePlacementsAll, getPoints, savePoints} from "./placementControl.js"
 
 // Functions for generic display items
 const displayGeneric = (function() {
@@ -15,7 +15,7 @@ const displayGeneric = (function() {
         subheading.textContent = "Contestant Progress"
 
         subheadingDiv.appendChild(subheading);
-        document.body.appendChild(subheadingDiv);
+        document.querySelector("main").appendChild(subheadingDiv);
     };
     
     // Create div for results chart and table, including inner divs for each
@@ -32,26 +32,18 @@ const displayGeneric = (function() {
         resultsDiv.appendChild(resultsTable);
         resultsDiv.appendChild(resultsChart);
 
-        document.body.appendChild(resultsDiv);
-    };
-
-    // Create div for buttons at the bottom of the screen
-    const createNavDiv = function() {
-        universalDisplay.createNavDiv();
-        const navDiv = document.getElementById("nav-div");
-
-        universalDisplay.createHomeButton();
-        universalDisplay.createPlacementsButton();
-        universalDisplay.createResetButton();
+        document.querySelector("main").appendChild(resultsDiv);
     };
 
     // Put together all functions required on opening the page including some from script.js
     const init = function () {
-        universalDisplay.createHeading();
-        universalDisplay.createButtons(true, true, true, true);
+        universalDisplay.init(true, true);
+        universalDisplay.createHomeButton();
+        universalDisplay.createPlacementsButton();
+        universalDisplay.createResetButton();
+        
         createHeaders();
         createResultsDiv();
-        createNavDiv();
         graph.createGraph();
     }
 
@@ -407,7 +399,7 @@ const settingsControl = (function() {
         settingsForm.appendChild(resetButton);
         settingsForm.appendChild(saveButton);
         settingsDiv.appendChild(settingsForm);
-        document.body.appendChild(settingsDiv);
+        document.querySelector("main").appendChild(settingsDiv);
     
         // Hide on startup
         settingsDiv.style.display = "none";
@@ -450,7 +442,7 @@ const settingsControl = (function() {
     };
 
     const savePointsFromForm = function () {
-        const storedPoints = JSON.parse(localStorage.getItem("points"));
+        getPoints();
 
         // Check each placement against the form and update if necessary
         for (let i = 0; i < points.points.length; i++) {
@@ -465,7 +457,7 @@ const settingsControl = (function() {
         // If change to points then save new array
         if (JSON.stringify(points.points)!==JSON.stringify(storedPoints)) { 
             updateDisplay[0] = true;
-            storage.savePoints();
+            savePoints();
         } else {
             console.log("settingsControl.savePointsFromForm: No update made to points");
         }
@@ -502,7 +494,7 @@ const settingsControl = (function() {
                 // Set back to initial values
                 console.log("settingsControl.settingsResetButton: Points being reset to initialPoints");
                 points.points = JSON.parse(JSON.stringify(points.initialPoints));
-                storage.savePoints();
+                savePoints();
                 // Update numbers that appear in the form
                 updateSettingsDisplay(points.points);
                 // Update needed for visual displays
@@ -660,6 +652,7 @@ const graph = (function () {
 
 // Run everything
 storage.getData();
+getPoints();
 updatePlacementsAll();
 displayGeneric.init();
 displayProgress.createTable();

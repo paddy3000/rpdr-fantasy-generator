@@ -127,6 +127,24 @@ const resetResults = function() {
     storage.saveData("queens");
 }
 
+const savePoints = function () {
+    localStorage.setItem(`RPDRGenerator.points`, JSON.stringify(points.points));
+    console.log("storage.savePoints: points saved to local storage");
+}
+
+const getPoints = function() {
+    let storedData = JSON.parse(localStorage.getItem(`RPDRGenerator.points.points`));
+    if (storedData){
+        readPoints=true;
+        for (let i = 0; i < points.length; i++) {
+            if (storedData[i].id !== points[i].id) {readPoints=false}
+        }
+        if (readPoints) {
+            console.log(`placementControl.getPoints: points retrieved from local storage`);
+            points.points = storedData;
+        }
+    }
+ }
 
 
-export { points, isEliminated, updatePlacements, resetResults, updatePlacementsAll}
+export { points, isEliminated, updatePlacements, resetResults, updatePlacementsAll, savePoints, getPoints}

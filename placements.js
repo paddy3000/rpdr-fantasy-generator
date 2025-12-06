@@ -1,6 +1,6 @@
 import {images, universalControl, universalDisplay} from "./script.js";
 import {competitionData, storage} from "./control.js";
-import {points, isEliminated, updatePlacements, resetResults, updatePlacementsAll } from "./placementControl.js"
+import {points, isEliminated, updatePlacements, resetResults, updatePlacementsAll} from "./placementControl.js"
 
 const display = (function(){
     // Create div to store episode information
@@ -166,7 +166,7 @@ const display = (function(){
     }
 
     const init = function(){
-        universalDisplay.init(true, true, false);
+        universalDisplay.init(true, false);
         createEpisodeHeaders();
         updateEpisodeHeaders();
         displayQueens();

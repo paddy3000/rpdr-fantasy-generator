@@ -141,7 +141,7 @@ const universalDisplay = (function() {
     };
 
     // General function for creating buttons that should take boolean inputs
-    const createButtons = function(createHome, createInfo, createSettings, createFeedback) {
+    const createButtons = function(createInfo, createSettings, createFeedback) {
         if (createInfo) {createInfoButton()};
         if (createSettings) {createSettingsButton()};
         if (createFeedback) {createFeedbackButton()};
