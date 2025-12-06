@@ -63,6 +63,9 @@ const render=(function () {
 
         const form = document.createElement("form");
         form.id = `${type}-form`;
+
+        const div = document.createElement("div");
+        div.id = `${type}-input-div`;
         
         const inputLabel = document.createElement("label");
         // inputLabel.textContent = "";
@@ -102,10 +105,13 @@ const render=(function () {
         resetButton.id = `${type}-reset-button`;
         resetButton.innerText = `Reset ${typeCapitalised}`
 
-        form.appendChild(resetButton);
 
         const formDiv = document.getElementById(`${type}-form-div`);
-        formDiv.appendChild(form);
+        
+        formDiv.appendChild(div);
+
+        div.appendChild(form);
+        div.appendChild(resetButton);
 
         console.log(`render.addForm: ${type} input form created`);
     }
@@ -351,7 +357,6 @@ const storage = (function() {
             control.counters = countersSaved;
             console.log("storage.getData: control.counters retrieved from local storage");
         };
-        // retriever("RPDRGenerator.points", competitionData.points);
     }
 
     return {saveData, saveCounters, getData };

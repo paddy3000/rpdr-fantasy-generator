@@ -50,10 +50,10 @@ const universalDisplay = (function() {
             infoDiv.appendChild(paragraph);
         };
     
-        addParagraph("Welcome to the RuPaul's Drag Race UK Season 7 fantasy generator");
-        addParagraph("Use the arrows to move through the weeks and reassign placements for the queens to change the outcome of the competition");
-        addParagraph(`To see the results summary press "See Results"`);
-        addParagraph(`To reset the results back to the original placements from the competition press "Reset Results"`);
+        addParagraph("Welcome to the RuPaul's Drag Race fantasy generator");
+        addParagraph("Create a list of queens to compete and the list of challenges they will compete in");
+        addParagraph(`Assign placements for each week using the "Assign Placements" button`);
+        addParagraph(`See the outcome of the competition using the "See Results" button`);
     
         // Set initial display to none and only pop-up when info button is clicked
         infoDiv.style.display = "none";
