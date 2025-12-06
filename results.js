@@ -1,21 +1,7 @@
 
 import { competitionData, storage} from "./control.js";
 import {images, universalControl, universalDisplay} from "./script.js";
-
-// Number of points for each placement
-const points = (function () {
-    const points =  [{id: "win",  placement: "Win", value: 5},
-                     {id: "top2", placement: "Top 2", value: 5},
-                     {id: "high", placement: "High", value: 4},
-                     {id: "safe", placement: "Safe", value: 3},
-                     {id: "low",  placement: "Low", value: 2},
-                     {id: "btm",  placement: "Bottom", value: 1},
-                     {id: "elim", placement: "Eliminated", value: 0}];
-
-    const initialPoints = points.slice();
-
-    return {points, initialPoints};
-})();
+import {points, isEliminated, updatePlacements, resetResults, updatePlacementsAll} from "./placementControl.js"
 
 // Functions for generic display items
 const displayGeneric = (function() {
@@ -54,7 +40,8 @@ const displayGeneric = (function() {
         universalDisplay.createNavDiv();
         const navDiv = document.getElementById("nav-div");
 
-        universalDisplay.createResetButton("nav-div");
+        universalDisplay.createPlacementsButton();
+        universalDisplay.createResetButton();
     };
 
     // Put together all functions required on opening the page including some from script.js
@@ -672,18 +659,8 @@ const graph = (function () {
 
 // Run everything
 storage.getData();
+updatePlacementsAll();
 displayGeneric.init();
 displayProgress.createTable();
 control.eventListeners();
 settingsControl.init();
-
-
-// import {images, universalControl, universalDisplay} from "./script.js";
-
-// const init = function(){
-//     universalDisplay.init(true, true, true);
-//     console.log(document.getElementById("nav-div"))
-//     universalDisplay.createResetButton("nav-div");
-// }
-
-// init()

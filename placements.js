@@ -1,6 +1,6 @@
 import {images, universalControl, universalDisplay} from "./script.js";
 import {competitionData, storage} from "./control.js";
-import {points, isEliminated, updatePlacements } from "./placementControl.js"
+import {points, isEliminated, updatePlacements, resetResults, updatePlacementsAll } from "./placementControl.js"
 
 const display = (function(){
     // Create div to store episode information
@@ -97,7 +97,7 @@ const display = (function(){
         const navDiv = document.getElementById("nav-div");
         const weeksNavDiv = document.createElement("div");
         weeksNavDiv.id = "nav-weeks";
-        navDiv.appendChild(weeksNavDiv);
+        navDiv.prepend(weeksNavDiv);
 
         // Create left arrow button and add properties
         const leftArrow = document.createElement("button");
@@ -165,43 +165,14 @@ const display = (function(){
         }
     }
 
-    // Create div for navigation to results page
-    const createResultsNavDiv = function() {
-        const navDiv = document.getElementById("nav-div");
-        const navResults = document.createElement("div");
-        navResults.id = "nav-results";
-        navDiv.appendChild(navResults);
-    }
-    
-    // Create button to go to results page
-    const createResultsButton = function() {
-        const navResults = document.getElementById("nav-results");
-
-        // Create link and button and put these together
-        const resultsLink = document.createElement("a");
-        resultsLink.href = "results.html";
-        const resultsButton = document.createElement("button");
-        resultsButton.textContent="See Results";
-        resultsButton.id="see-results";
-
-        resultsLink.appendChild(resultsButton);
-        navResults.appendChild(resultsLink);
-
-        // Add event listener
-        // resultsButton.addEventListener("click", storage.saveData);
-    }
-
-
-
     const init = function(){
         universalDisplay.init(true, true, false);
         createEpisodeHeaders();
         updateEpisodeHeaders();
         displayQueens();
         createArrows();
-        createResultsNavDiv();
-        createResultsButton();
-        universalDisplay.createResetButton("nav-results");
+        universalDisplay.createResultsButton();
+        universalDisplay.createResetButton();
         updatePlacementDropdown()
         updatePlacementDropdownWeek();
     }
@@ -338,9 +309,9 @@ const control = (function () {
     // Event listener for the Reset Results button which sets results back to the original competition placements
     const resetListener = function () {
         const resetButton = document.getElementById("reset-results");
-        resetButton.addEventListener("click", function () {
-            universalControl.resetResults();
-            for (let i = 0; i < competitionData.queens.length; i++) { display.updatePlacementDropdown()}
+        resetButton.addEventListener("click", () => {
+            resetResults();
+            display.weekUpdate();
         });
     };
 
@@ -350,13 +321,14 @@ const control = (function () {
         weekDropdownListener();
         placementUpdateListener();
         // returningUpdate();
-        // resetListener();
+        resetListener();
     }
 
     return { getPreviousWeek, eventListeners, placementUpdateListener };
 })();
 
 storage.getData();
+updatePlacementsAll();
 display.init()
 control.eventListeners();
 display.weekUpdate();

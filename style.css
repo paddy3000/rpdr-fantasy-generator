@@ -225,9 +225,14 @@ button.episode-up {
     justify-content: center;
     background-color: var(--light-accent);
     border-top: 0.2rem var(--dark-accent) solid;
-    padding:  0;
     padding: 1rem 0;
+    gap: 1.5rem;
     width: 100vw;
+}
+
+#nav-buttons-div {
+    display: inline-flex;
+    gap: 1.5rem;
 }
 
 /* Arrows */
@@ -249,15 +254,6 @@ button.episode-up {
     justify-content: center;
     align-items: center;
     gap: 1.5rem;
-    padding-bottom: 1.5rem;
-}
-
-#nav-results {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5rem;
-    padding-top: 1rem;
 }
 
 select {

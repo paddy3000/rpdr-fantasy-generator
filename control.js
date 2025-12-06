@@ -54,21 +54,8 @@ const render=(function () {
         buildSection("episode", "Use the drop down or enter custom text to decide what challenges the queens will face");
         arrowButtonHide();
 
-        const navDiv = document.getElementById("nav-div")
-
-
-        // Link to feedback page
-        const choosePlacementsLink = document.createElement("a");
-        choosePlacementsLink.href = "placements.html";
-
-        const choosePlacementsButton = document.createElement("button");
-        choosePlacementsButton.id = "choose-placements-button";
-        choosePlacementsButton.innerText = "Choose Placements";
-
-        choosePlacementsButton.addEventListener("click", placements.fillPlacements)
-
-        navDiv.appendChild(choosePlacementsLink);
-        choosePlacementsLink.appendChild(choosePlacementsButton);
+        universalDisplay.createPlacementsButton();
+        universalDisplay.createResultsButton();
     }
     
     const addForm = function (type) {
@@ -332,44 +319,6 @@ const competitionData = (function () {
     return {week, queens, episodes, episodeSuggestions, placements, finalePlacements}
 })()
 
-
-const placements = (function() {
-    const fillPlacements = function() {
-        competitionData.queens.forEach(queen => {
-            if (queen.placements === undefined || queen.placements.length == 0) {
-                // create from scratch
-                for (let i = 0; i < competitionData.episodes.length; i++) {
-                    const newEp = { placement: "Safe", returns: false, episodeID: competitionData.episodes[i].id };
-                    queen.placements.push(newEp);
-                }
-            } else {
-                // ensure correct order and fill missing episodes
-                const newPlacementArray = [];
-                competitionData.episodes.forEach(episode => {
-                    let episodePresent = false;
-
-                    queen.placements.forEach(placement => {
-                        if (placement.episodeID === episode.id) {
-                            newPlacementArray.push(placement);
-                            episodePresent = true;
-                        }
-                    });
-
-                    if (episodePresent === false) {
-                        const newEp = { placement: "Safe", returns: false, episodeID: episode.id };
-                        newPlacementArray.push(newEp);
-                    }
-                });
-
-                queen.placements = newPlacementArray;
-            };
-        });
-        storage.saveData("queens");
-    };
-
-    return {fillPlacements}
-})()
-
 // Functions for saving and retrieving data
 const storage = (function() {
     // Save data
@@ -408,6 +357,9 @@ const storage = (function() {
     return {saveData, saveCounters, getData };
 })();
 
+import {images, universalControl, universalDisplay} from "./script.js";
+export {competitionData, control_script, storage}
+
 const control_script = function(){
     storage.getData();
     
@@ -415,7 +367,3 @@ const control_script = function(){
     render.init();
     control.init();
 }
-
-
-import {images, universalControl, universalDisplay} from "./script.js";
-export {competitionData, control_script, storage}

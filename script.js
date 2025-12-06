@@ -172,25 +172,65 @@ const universalDisplay = (function() {
         if (createFeedback) {createFeedbackButton()};
     }
 
-    // Option to reset queen progress
-    // Event listener added individually to each page
-    const createResetButton = function(navID) {
-        // Get div that button will sit inside
-        const navResults = document.getElementById(navID);
-        
-        // Create button
-        const resetButton = document.createElement("button");
-        resetButton.textContent="Reset Results";
-        resetButton.id="reset-results";
-        navResults.appendChild(resetButton);
-    }
-
     // Create navigation div
     const createNavDiv = function() {
         const navDiv = document.createElement("div");
         navDiv.id = "nav-div";
         document.body.appendChild(navDiv);
+
+        const navButtonsDiv = document.createElement("div");
+        navButtonsDiv.id = "nav-buttons-div";
+        navDiv.appendChild(navButtonsDiv);
     };
+
+    const createPlacementsButton = function() {
+        const navDiv = document.getElementById("nav-buttons-div")
+
+        // Link to placements page
+        const choosePlacementsLink = document.createElement("a");
+        choosePlacementsLink.href = "placements.html";
+
+        const choosePlacementsButton = document.createElement("button");
+        choosePlacementsButton.id = "choose-placements-button";
+        choosePlacementsButton.innerText = "Choose Placements";
+
+        navDiv.appendChild(choosePlacementsLink);
+        choosePlacementsLink.appendChild(choosePlacementsButton);
+    }
+    
+    // Create button to go to results page
+    const createResultsButton = function() {
+        const navDiv = document.getElementById("nav-buttons-div");
+
+        // Create link and button and put these together
+        const resultsLink = document.createElement("a");
+        resultsLink.href = "results.html";
+        const resultsButton = document.createElement("button");
+        resultsButton.textContent="See Results";
+        resultsButton.id="see-results";
+
+        resultsLink.appendChild(resultsButton);
+        navDiv.appendChild(resultsLink);
+
+        // Add event listener
+        // resultsButton.addEventListener("click", storage.saveData);
+    }
+
+    // Option to reset queen progress
+    // Event listener added individually to each page
+    const createResetButton = function() {
+        // Get div that button will sit inside
+        const navDiv = document.getElementById("nav-buttons-div");
+        
+        // Create button
+        const resetButton = document.createElement("button");
+        resetButton.textContent="Reset Results";
+        resetButton.id="reset-results";
+        navDiv.appendChild(resetButton);
+    }
+
+
+
 
     const init = function(createHome, createInfo, createSettings) {
         createHeading();
@@ -201,7 +241,7 @@ const universalDisplay = (function() {
         createInfoBox();
     }
 
-    return {init, createHeading, createButtons, createNavDiv, createInfoBox, createResetButton, createCloseButton};
+    return {init, createHeading, createButtons, createNavDiv, createInfoBox, createResetButton, createCloseButton, createPlacementsButton, createResultsButton};
 })();
 
 // // Create functions that will be used to control the site
