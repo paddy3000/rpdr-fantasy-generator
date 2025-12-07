@@ -455,6 +455,7 @@ const settingsControl = (function() {
         }
 
         // If change to points then save new array
+        const storedPoints = JSON.parse(localStorage.getItem(`RPDRGenerator.points`));
         if (JSON.stringify(points.points)!==JSON.stringify(storedPoints)) { 
             updateDisplay[0] = true;
             savePoints();
