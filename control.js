@@ -160,14 +160,14 @@ const render=(function () {
             
                 // Create UP arrow (▲)
                     const upButton = document.createElement("button");
-                    upButton.classList = "episode-toggle";
+                    upButton.classList = "episode-toggle episode-up";
                     upButton.id = `episode-up-${id}`;
                     upButton.innerText = "▲";
                     buttonDiv.appendChild(upButton);
             
                 // Create DOWN arrow (▼)
                     const downButton = document.createElement("button");
-                    downButton.classList = "episode-toggle";
+                    downButton.classList = "episode-toggle episode-down";
                     downButton.id = `episode-down-${id}`;
                     downButton.innerText = "▼";
                     buttonDiv.appendChild(downButton);
@@ -178,7 +178,7 @@ const render=(function () {
             }
             
             const removeButton = document.createElement(`button`);
-            removeButton.classList = `control-list-remove`;
+            removeButton.classList = `control-list-remove ${type}-list-remove`;
             removeButton.id = `${type}-list-remove-${id}`;
             removeButton.innerText = `x`;
             buttonDiv.appendChild(removeButton);
@@ -223,7 +223,7 @@ const control=(function() {
 
     const elementRemove = function (type) {
             document.querySelector("main").addEventListener("click", (e) => {
-                if (e.target.id.contains(`${type}-list-remove`)) {
+                if (e.target.classList.contains(`${type}-list-remove`)) {
                   const id = e.target.id;
                   const elementID = Number(id.replace(`${type}-list-remove-`, ""));
                   
@@ -244,7 +244,7 @@ const control=(function() {
 
     const arrowListener = function(dir) {
         document.querySelector("main").addEventListener("click", (e) => {
-            if (e.target.id.contains(`episode-${dir}`)) {
+            if (e.target.classList.contains(`episode-${dir}`)) {
                 const id = Number(e.target.id.split("-").pop());
 
                 const position = competitionData.episodes.findIndex(ep => ep.id === id);
