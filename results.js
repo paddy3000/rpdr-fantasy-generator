@@ -97,7 +97,6 @@ const displayProgress = (function () {
                                    weeks: lastWeekIn,
                                    finaleResult: finaleResult
                                 };
-                                console.log({weeksInCompetition})
 
         }
 
