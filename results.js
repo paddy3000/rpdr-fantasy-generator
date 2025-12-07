@@ -89,6 +89,7 @@ const displayProgress = (function () {
             if (competitionData.queens[i].finalePlacement==="Winner") {finaleResult=1};
             if (competitionData.queens[i].finalePlacement==="Runner Up") {finaleResult=2};
             if (competitionData.queens[i].finalePlacement==="Eliminated") {finaleResult=3};
+            if (competitionData.queens[i].finalePlacement==="Out") {finaleResult=4};
 
             // Create an object for each queen with the information needed for creating the table
             weeksInCompetition[i]={index: i,
@@ -96,6 +97,7 @@ const displayProgress = (function () {
                                    weeks: lastWeekIn,
                                    finaleResult: finaleResult
                                 };
+                                console.log({weeksInCompetition})
 
         }
 
