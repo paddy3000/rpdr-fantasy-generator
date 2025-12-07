@@ -47,9 +47,11 @@ const updatePlacements = function (weekFrom, queen) {
         if (isEliminated(placement.placement)) {eliminated = true}
     }
 
-    if (isEliminated===false && queen.finalePlacement==="Out") {
+    if (eliminated===false && queen.finalePlacement==="Out") {
         queen.finalePlacement="Runner Up";
-    } else if (isEliminated===true && queen.finalePlacement!=="Out") {
+        console.log(queen);
+    } else if (eliminated===true && queen.finalePlacement!=="Out") {
+        console.log(queen);
         queen.finalePlacement="Out";
     }
  
