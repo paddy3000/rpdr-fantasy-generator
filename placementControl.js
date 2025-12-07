@@ -48,7 +48,7 @@ const updatePlacements = function (weekFrom, queen) {
     }
 
     if (isEliminated===false && queen.finalePlacement==="Out") {
-        queen.finalePlacement="Runner up";
+        queen.finalePlacement="Runner Up";
     } else if (isEliminated===true && queen.finalePlacement!=="Out") {
         queen.finalePlacement="Out";
     }

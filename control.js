@@ -22,6 +22,7 @@ const render=(function () {
 
             const mainTypeDiv = document.createElement("div");
             mainTypeDiv.id = `main-${type}-div`;
+            mainTypeDiv.classList = "main-element-div";
 
             const formDiv = document.createElement("div");
             formDiv.id = `${type}-form-div`;
@@ -51,7 +52,7 @@ const render=(function () {
         }
 
         buildSection("queen", "Enter the names of the queens to compete");
-        buildSection("episode", "Use the drop down or enter custom text to decide what challenges the queens will face");
+        buildSection("episode", "Use the drop down or enter custom text to decide what challenges the queens will face. A finale episode will be added automatically at the end of the competition.");
         arrowButtonHide();
 
         universalDisplay.createPlacementsButton();
@@ -66,6 +67,7 @@ const render=(function () {
 
         const div = document.createElement("div");
         div.id = `${type}-input-div`;
+        div.classList = "control-input-div";
         
         const inputLabel = document.createElement("label");
         // inputLabel.textContent = "";
@@ -73,6 +75,7 @@ const render=(function () {
 
         const input = document.createElement("input");
         input.id = `add-${type}-input`;
+        input.classList = `add-element-input`;
         input.name = `add-${type}-input`;
 
         const submitButton = document.createElement("button");
@@ -103,6 +106,7 @@ const render=(function () {
 
         const resetButton = document.createElement("button");
         resetButton.id = `${type}-reset-button`;
+        resetButton.classList = `control-reset-button`;
         resetButton.innerText = `Reset ${typeCapitalised}`
 
 
@@ -138,7 +142,7 @@ const render=(function () {
     const displayListElement = function (type, name, id) {
             const elementListItem = document.createElement("li");
             // queenDiv.id = album.id;
-            elementListItem.classList = `${type}-list-element`;
+            elementListItem.classList = `control-list-element`;
             elementListItem.id = `${type}-list-element-${id}`;
             elementListItem.innerText = name;
 
@@ -156,14 +160,14 @@ const render=(function () {
             
                 // Create UP arrow (▲)
                     const upButton = document.createElement("button");
-                    upButton.classList = "episode-up";
+                    upButton.classList = "episode-toggle";
                     upButton.id = `episode-up-${id}`;
                     upButton.innerText = "▲";
                     buttonDiv.appendChild(upButton);
             
                 // Create DOWN arrow (▼)
                     const downButton = document.createElement("button");
-                    downButton.classList = "episode-down";
+                    downButton.classList = "episode-toggle";
                     downButton.id = `episode-down-${id}`;
                     downButton.innerText = "▼";
                     buttonDiv.appendChild(downButton);
@@ -174,7 +178,7 @@ const render=(function () {
             }
             
             const removeButton = document.createElement(`button`);
-            removeButton.classList = `${type}-list-remove`;
+            removeButton.classList = `control-list-remove`;
             removeButton.id = `${type}-list-remove-${id}`;
             removeButton.innerText = `x`;
             buttonDiv.appendChild(removeButton);
@@ -320,7 +324,7 @@ const competitionData = (function () {
     let episodes = [];
 
     const placements=["Win", "Top 2", "High", "Safe", "Low", "Bottom", "Eliminated", "Quit", "Out"];
-    const finalePlacements=["Winner", "Runner up", "Eliminated"]
+    const finalePlacements=["Winner", "Runner Up", "Eliminated"]
 
     return {week, queens, episodes, episodeSuggestions, placements, finalePlacements}
 })()

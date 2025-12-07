@@ -82,15 +82,13 @@ const displayProgress = (function () {
             for (let j=0; j < competitionData.episodes.length; j++){
                 if (competitionData.queens[i].placements[j].placement!=="Out") {
                     lastWeekIn=j+1;
-                    // Add value for finaleResult so that queens who all make it to the end can be sorted
-                    if (j===competitionData.episodes.length-1) {
-                        if (competitionData.queens[i].placements[j].placement==="Winner") {finaleResult=1};
-                        if (competitionData.queens[i].placements[j].placement==="Runner Up") {finaleResult=2};
-                        if (competitionData.queens[i].placements[j].placement==="Eliminated") {finaleResult=3};
-
-                    }
                 };
-            }
+            }                    
+            
+            // Add value for finaleResult so that queens who all make it to the end can be sorted
+            if (competitionData.queens[i].finalePlacement==="Winner") {finaleResult=1};
+            if (competitionData.queens[i].finalePlacement==="Runner Up") {finaleResult=2};
+            if (competitionData.queens[i].finalePlacement==="Eliminated") {finaleResult=3};
 
             // Create an object for each queen with the information needed for creating the table
             weeksInCompetition[i]={index: i,
@@ -167,7 +165,7 @@ const displayProgress = (function () {
         const weeksHeader=document.createElement("th");
         weeksHeader.textContent="Epsiode";
         weeksHeader.className="weeks-header";
-        weeksHeader.colSpan=competitionData.episodes.length;
+        weeksHeader.colSpan=competitionData.episodes.length+1;
 
         // Create blank cell with "PPE"
         const ppeHeader=document.createElement("th");
@@ -181,13 +179,13 @@ const displayProgress = (function () {
         headerRow1.appendChild(ppeHeader);
 
         // Loop through each week to create headers and short episode summary
-        for (let i=0; i < competitionData.episodes.length; i++) {
+        for (let i=0; i < competitionData.episodes.length+1; i++) {
             const weekNum = document.createElement("th");
             weekNum.textContent=`${i+1}`;
             headerRow2.appendChild(weekNum);
 
             const episodeType = document.createElement("th");
-            episodeType.textContent=`${competitionData.episodes[i].name}`;
+            episodeType.textContent = i < competitionData.episodes.length ? `${competitionData.episodes[i].name}` : "Finale";
             episodeType.className="episode-type";
             headerRow3.appendChild(episodeType);
         };
@@ -216,17 +214,19 @@ const displayProgress = (function () {
             row.appendChild(queenNameCell);
 
             // Get results for each week and add to row
-            for (let j = 0; j < competitionData.episodes.length; j++) {
+            for (let j = 0; j < competitionData.episodes.length+1; j++) {
                 // Formatted result for table
-                const formattedResult = formatResult(competitionData.queens[i].placements[j].placement);
+                const formattedResult = j < competitionData.episodes.length ? 
+                    formatResult(competitionData.queens[i].placements[j].placement) : 
+                    formatResult(competitionData.queens[i].finalePlacement);
                 const weekCell = document.createElement("td");
                 const weekResult = document.createTextNode(formattedResult);
                 weekCell.className="result " + formattedResult.toLowerCase().replaceAll(" ", "");
-                if (j === competitionData.episodes.length-1) {
+                if (j === competitionData.episodes.length) {
                     weekCell.className += " finale-cell";
                 };
 
-                if (competitionData.queens[i].placements[j].returns) {
+                if (j < competitionData.episodes.length && competitionData.queens[i].placements[j].returns) {
                     weekCell.className += " returning";
                 }
                 weekCell.appendChild(weekResult);

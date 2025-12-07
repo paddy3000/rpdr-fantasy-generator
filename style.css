@@ -169,57 +169,55 @@ form > button {
 /* Control page */
 /****************/
 
-#main-queen-div {
+/* #main-queen-div {
     padding: 1.5rem 0 0 0;
 }
 
 #main-episode-div {
     padding: 1.5rem 0 1.5rem 0;
+} */
+
+.main-element-div {
+    margin: 1rem 0 0.5rem 0;
+    width: min(35rem, 100vw)
+
 }
 
+.control-input-div {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 0;
+}
 
-.queen-list-element,
-.episode-list-element {
+.control-list-element {
     display: flex;
     justify-content: space-between;
 }
 
-button.queen-list-remove,
-button.episode-list-remove,
-button.episode-down,
-button.episode-up {
+button.control-list-remove,
+button.episode-toggle {
     display: inline;
     margin: 0.1rem 0.3rem;
 }
 
 
-button.queen-list-remove,
-button.episode-list-remove {
+button.control-list-remove {
     padding: 0.1rem 0.5rem;
 }
 
-button.episode-down,
-button.episode-up { 
+button.episode-toggle { 
     padding: 0.1rem 0.3rem;
 }
 
-#queen-reset-button,
-#episode-reset-button {
+.control-reset-button {
     margin: 0.7rem;
 }
 
-#add-queen-input,
-#add-episode-input {  
+.add-element-input {  
     width: 10rem;
     padding: 0.3rem;  
-}
-
-#queen-input-div,
-#episode-input-div {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
 }
 
 
@@ -243,7 +241,7 @@ button.episode-up {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: min(95vw, 65rem);
+    width: min(90vw, 40rem);
     box-sizing: border-box;
 }
 
