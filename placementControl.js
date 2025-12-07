@@ -24,31 +24,7 @@ const updatePlacements = function (weekFrom, queen) {
     console.log(`placementControl.updatePlacements: Placements updated for ${queen.name} from ${weekFrom}`);
     // Initialise eliminated as false, will be updated for each week
     let eliminated = false;
-    eliminated = isEliminated(queen.placements[weekFrom-1].placement);  
-    // Cycle through the subsequent weeks
-    // for (let j = weekFrom; j < competitionData.episodes.length; j++) {
-
-    //     // If queen returns then set value of eliminated back to false
-    //     if (queen.placements[j].returns===true && !isEliminated(queen.placements[j].placement)) {eliminated = false};
-
-    //     // Logic for if queen is eliminated
-    //     if (eliminated===true && queen.placements[j].placement!=="Out") {
-    //         // Set all weeks where queen is eliminated to Out
-    //         if ((queen.placements[j].returns===false) || !isEliminated(queen.placements[j].placement)) {
-    //             queen.placements[j].placement="Out"
-    //         };
-    //     } 
-
-    //     if (eliminated===false && (isEliminated(queen.placements[j].placement) || queen.placements[j].placement=="Out")) {
-    //         // queen.placements[j].placement = j < competitionData.episodes.length-1 ? "Safe" : "Runner Up";
-    //         queen.placements[j].placement = "Safe";
-
-    //         // Set returns back to false since in the competition
-    //         queen.placements[j].returns=false;
-    //     };
-
-    //     if (isEliminated(queen.placements[j].placement)) {eliminated=true};
-    // }
+    if (weekFrom > 0 && weekFrom < competitionData.episodes.length+1) {eliminated = isEliminated(queen.placements[weekFrom-1].placement)};  
 
     // Apply rules AFTER the chosen week
     for (let j = weekFrom; j < competitionData.episodes.length; j++) {
@@ -71,6 +47,12 @@ const updatePlacements = function (weekFrom, queen) {
         if (isEliminated(placement.placement)) {eliminated = true}
     }
 
+    if (isEliminated===false && queen.finalePlacement==="Out") {
+        queen.finalePlacement="Runner up";
+    } else if (isEliminated===true && queen.finalePlacement!=="Out") {
+        queen.finalePlacement="Out";
+    }
+ 
     storage.saveData("queens");
 }
 
@@ -104,6 +86,10 @@ const fillPlacements = function() {
 
             queen.placements = newPlacementArray;
         };
+        
+        if (!queen.finalePlacement || typeof queen.finalePlacement !== "string") {
+            queen.finalePlacement = "Runner Up";
+        }
     });
     storage.saveData("queens");
 };

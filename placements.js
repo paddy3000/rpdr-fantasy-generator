@@ -15,7 +15,13 @@ const display = (function(){
     // Use compeitionData and current week to display relevant information for each epsiode
     const updateEpisodeHeaders = function() {
         // Get information from competitionData object
-        const title  = `Episode ${competitionData.week}: ${competitionData.episodes[competitionData.week-1].name}`;
+        
+        let title="";
+        if (competitionData.week < competitionData.episodes.length+1) {
+            title  = `Episode ${competitionData.week}: ${competitionData.episodes[competitionData.week-1].name}`;
+        } else {
+            title = `Episode ${competitionData.week}: Finale`;
+        }
 
         const episodeInfo = document.getElementById("episode-info");
 
@@ -81,7 +87,7 @@ const display = (function(){
         select.id = "week-select";
 
         // Add options from 1 to numberOfWeeks
-        for (let i = 1; i <= competitionData.episodes.length; i++) {
+        for (let i = 1; i <= competitionData.episodes.length+1; i++) {
             const option = document.createElement("option");
             option.value = i;
             option.textContent = `Week ${i}`;
@@ -129,8 +135,8 @@ const display = (function(){
 
     // Replace placement dropdowns with new select items if moving from or to the finale episode where placements are different
     const updatePlacementDropdownWeek = function() {
-        if ((competitionData.week===competitionData.episodes.length+1 && control.getPreviousWeek()!==competitionData.episodes.length) 
-            || (competitionData.week!==competitionData.episodes.length+1 && control.getPreviousWeek()===competitionData.episodes.length)) {
+        if ((competitionData.week===competitionData.episodes.length+1 && control.getPreviousWeek()!==competitionData.episodes.length+1) 
+            || (competitionData.week!==competitionData.episodes.length+1 && control.getPreviousWeek()===competitionData.episodes.length+1)) {
             for (let i=0; i < competitionData.queens.length; i++) {
                 // Remove existing dropdown
                 const queenDropdown = document.getElementById(`queen-dropdown${i}`);
@@ -147,10 +153,18 @@ const display = (function(){
     // Update placement dropdowns and queen images
     const updatePlacementDropdown = function() {
         for (let i = 0; i < competitionData.queens.length; i++) {
-            // Select relevant elements
             const queenDropdown = document.getElementById(`queen-dropdown${i}`);
             const queenDiv = document.getElementById(`queen${i}`);
-            const placementAtWeek = competitionData.queens[i].placements[competitionData.week-1].placement;
+
+            let placementAtWeek="";
+
+            if (competitionData.week < competitionData.episodes.length+1) {
+                placementAtWeek=competitionData.queens[i].placements[competitionData.week-1].placement;
+            } else {
+                placementAtWeek=competitionData.queens[i].finalePlacement
+            };
+
+            // const placementAtWeek = i < competitionData.queens.length ? competitionData.queens[i].placements[competitionData.week-1].placement : competitionData.queens[i].finalePlacement;
 
             // Update dropdown to show current placement and hide dropdown if queen is no longer in the competition
             queenDropdown.value = placementAtWeek;
@@ -158,7 +172,6 @@ const display = (function(){
 
             // Add class names to queen images so that formatting can be controlled through CSS
             queenDiv.className = "queen-div " + placementAtWeek.toLowerCase().replaceAll(" ", "");
-            // if (competitionData.week===competitionData.episodes.length) {queenImageBox.className = queenImageBox.className + " finale"};
 
             // Add returning button if queen is out of the competition
             // updateReturningButton();
@@ -182,7 +195,7 @@ const display = (function(){
     const weekUpdate = function() {
         console.log(`control.weekUpdate: Display updated for week ${competitionData.week}`);
         document.getElementById("left-arrow").style.display = competitionData.week> 1 ? "inline-block" : "none";
-        document.getElementById("right-arrow").style.display = competitionData.week< competitionData.episodes.length ? "inline-block" : "none";
+        document.getElementById("right-arrow").style.display = competitionData.week < competitionData.episodes.length+1 ? "inline-block" : "none";
 
         const weekDropdown = document.getElementById("week-select");
         weekDropdown.value = competitionData.week.toString();
@@ -212,7 +225,7 @@ const control = (function () {
         const incrementWeek = function(change) {
             previousWeek=competitionData.week;
             if (change==="decrease" && competitionData.week> 1) {competitionData.week--};
-            if (change==="increase" && competitionData.week< competitionData.episodes.length) {competitionData.week++};
+            if (change==="increase" && competitionData.week<=competitionData.episodes.length) {competitionData.week++};
 
             console.log(`control.arrowListeners: Week updated to ${competitionData.week}`);
             display.weekUpdate(); // Update display
@@ -265,7 +278,11 @@ const control = (function () {
                 console.log("control.placementUpdateListener: Dropdown changed");
                 // Get selected value and set queen placement equal to this value
                 const dropdownValue = e.target.value;
-                competitionData.queens[i].placements[competitionData.week- 1].placement = dropdownValue;
+                if (competitionData.week < competitionData.episodes.length+1) {
+                    competitionData.queens[i].placements[competitionData.week- 1].placement = dropdownValue;
+                } else {
+                    competitionData.queens[i].finalePlacement = dropdownValue;
+                }
     
                 updatePlacements(competitionData.week, competitionData.queens[i]);
     
@@ -273,39 +290,6 @@ const control = (function () {
             });
         }
     };
-
-    // // Function to update the returns macro for each queen depending on placements selected by user
-    // const returningUpdate = function () {
-    //     const updatePlacements = function(queen, returning) {    
-    //         if (returning==="Yes") {
-    //             // If queen is returning then set subsequent results to Safe, or original placement in competition if queen had not been eliminated by that point 
-    //             for (let j = competitionData.week-1; j < competitionData.episodes.length; j++) {
-    //                 queen.return[j] = j===competitionData.week-1 ? true : queen.initialReturn[j];
-    //                 if (queen.initialPlacement[j]==="Out") {
-    //                     queen.placement[j] = j < competitionData.episodes.length-1 ? "Safe" : "Runner Up";
-    //                 } else {
-    //                     queen.placement[j] = queen.initialPlacement[j]
-    //                 };
-    //             };
-    //         } else if (returning==="No") {
-    //             // If queen is not returning then ensure all subsequent values are set to Out unless queen returns again
-    //             for (let j = competitionData.week-1; j < competitionData.episodes.length; j++) {
-    //                 queen.return[j] = j===competitionData.week-1 ? false : queen.initialReturn[j];
-    //                 queen.placement[j] = queen.return[j]===false ? "Out" :  queen.initialPlacement[j];
-    //             };
-    //         }
-    //         display.updatePlacementDropdown(competitionData.week); // Update display
-    //     }
-
-    //     // Attach listeners to radio buttons for each queen
-    //     for (let i = 0; i < competitionData.queens.length; i++) {
-    //         const yesRadio = document.getElementById(`returningYes${i}`);
-    //         const noRadio = document.getElementById(`returningNo${i}`);
-            
-    //         if (yesRadio) {yesRadio.addEventListener("change", () => updatePlacements(queens.queens[i], "Yes"))};
-    //         if (noRadio) {noRadio.addEventListener("change", () => updatePlacements(queens.queens[i], "No"))};
-    //     }
-    // };
 
     // Event listener for the Reset Results button which sets results back to the original competition placements
     const resetListener = function () {
