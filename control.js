@@ -223,7 +223,7 @@ const control=(function() {
 
     const elementRemove = function (type) {
             document.querySelector("main").addEventListener("click", (e) => {
-                if (e.target.classList.contains(`${type}-list-remove`)) {
+                if (e.target.id.contains(`${type}-list-remove`)) {
                   const id = e.target.id;
                   const elementID = Number(id.replace(`${type}-list-remove-`, ""));
                   
@@ -244,7 +244,7 @@ const control=(function() {
 
     const arrowListener = function(dir) {
         document.querySelector("main").addEventListener("click", (e) => {
-            if (e.target.classList.contains(`episode-${dir}`)) {
+            if (e.target.id.contains(`episode-${dir}`)) {
                 const id = Number(e.target.id.split("-").pop());
 
                 const position = competitionData.episodes.findIndex(ep => ep.id === id);
